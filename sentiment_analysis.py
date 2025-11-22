@@ -81,12 +81,18 @@ outputs = model(**inputs)
 
 #  Convert logits → probabilities → predicted label
 probs = tf.nn.softmax(outputs.logits, axis=1)
-pred_class = tf.argmax(probs, axis=1).numpy()[0]
-if pred_class == 1:
+probs_np = probs.numpy()[0]
+
+pred_idx = tf.argmax(probs, axis=1).numpy()[0]
+
+if pred_idx == 1:
     pred_class = "positive"
 else:
     pred_class = "negative"
 
-#  Print result
-print("Probabilities:", probs.numpy())
+# Confidence score = highest probability
+confidence = float(probs_np[pred_idx])
+
+print("Probabilities:", probs_np)
 print("Predicted class:", pred_class)
+print("Confidence score:", round(confidence, 4))
